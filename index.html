@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberPulse OS — Ultimate Futuristic Dashboard</title>
+  <link rel="stylesheet" href="./main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- YANGI: Fon rejimida Matrix yomg'iri kanvasi -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Yon Menyu (Sidebar) -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-atom fa-spin-pulse"></i>
+      <span>CyberPulse</span>
+    </div>
+
+    <nav class="nav-menu">
+      <button class="nav-link active" data-target="overview-page">
+        <i class="fa-solid fa-chart-pie"></i> <span>Umumiy</span>
+      </button>
+      <button class="nav-link" data-target="tasks-page">
+        <i class="fa-solid fa-list-check"></i> <span>Vazifalar</span>
+      </button>
+      <button class="nav-link" data-target="audio-page">
+        <i class="fa-solid fa-wave-square"></i> <span>Audio Pad</span>
+      </button>
+      <button class="nav-link" data-target="notes-page">
+        <i class="fa-solid fa-note-sticky"></i> <span>Qaydlar</span>
+      </button>
+      <button class="nav-link" data-target="crypto-page">
+        <i class="fa-solid fa-coins"></i> <span>Valyuta & Kripto</span>
+      </button>
+      <button class="nav-link" data-target="pomodoro-page">
+        <i class="fa-solid fa-stopwatch"></i> <span>Pomodoro</span>
+      </button>
+      <button class="nav-link" data-target="game-page">
+        <i class="fa-solid fa-gamepad"></i> <span>Cyber Game</span>
+      </button>
+      <button class="nav-link" data-target="calc-page">
+        <i class="fa-solid fa-calculator"></i> <span>Kalkulyator</span>
+      </button>
+
+      <!-- YANGI NAV-LINKLAR -->
+      <button class="nav-link" data-target="cyber-sec-page">
+        <i class="fa-solid fa-shield-halved"></i> <span>Cyber Security</span>
+      </button>
+      <button class="nav-link" data-target="weather-page">
+        <i class="fa-solid fa-earth-americas"></i> <span>Ob-havo & Koinot</span>
+      </button>
+    </nav>
+
+    <div class="user-profile">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar">
+      <div class="user-info">
+        <span class="name">Dasturchi</span>
+        <span class="status"><i class="fa-solid fa-circle"></i> Onlayn</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Asosiy Tarkib (Main Content) -->
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="welcome-text">
+        <h1 id="pageTitle">Umumiy Panel <span class="glow-text">CyberPulse OS</span></h1>
+        <p id="pageSub">Tizim holati va umumiy analitika</p>
+      </div>
+
+      <div class="header-widgets">
+        <div class="theme-switcher">
+          <span class="theme-dot cyan active" data-color="#00f2fe"></span>
+          <span class="theme-dot purple" data-color="#7000ff"></span>
+          <span class="theme-dot green" data-color="#00e676"></span>
+          <span class="theme-dot orange" data-color="#ff9100"></span>
+        </div>
+
+        <div class="widget-box">
+          <i class="fa-solid fa-clock"></i>
+          <span id="currentTime">00:00:00</span>
+        </div>
+        <div class="widget-box">
+          <i class="fa-solid fa-cloud-sun"></i>
+          <span>Toshkent +24°C</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1-SAHIFA: UMUMIY (OVERVIEW) -->
+    <section id="overview-page" class="page-section active-page">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon cyan"><i class="fa-solid fa-bolt"></i></div>
+          <div class="stat-data">
+            <h3>Protsessor Yuklamasi</h3>
+            <p class="stat-number" id="cpuVal">42%</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple"><i class="fa-solid fa-memory"></i></div>
+          <div class="stat-data">
+            <h3>Tezkor Xotira (RAM)</h3>
+            <p class="stat-number">6.4 / 16 GB</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fa-solid fa-check-double"></i></div>
+          <div class="stat-data">
+            <h3>Bajarilgan Ishlar</h3>
+            <p class="stat-number" id="completedTaskCount">0</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange"><i class="fa-solid fa-wifi"></i></div>
+          <div class="stat-data">
+            <h3>Tarmoq Tezligi</h3>
+            <p class="stat-number">120 Mb/s</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-box chart-panel margin-top-20">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-chart-line"></i> Real-Vaqt Analitikasi</h2>
+          <button class="icon-btn" id="refreshChartBtn"><i class="fa-solid fa-rotate-right"></i> Yangilash</button>
+        </div>
+        <div class="chart-container">
+          <canvas id="analyticsChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2-SAHIFA: VAZIFALAR (TASKS) -->
+    <section id="tasks-page" class="page-section">
+      <div class="panel-box">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-list-check"></i> Kunlik Vazifalar Tizimi</h2>
+        </div>
+        <form id="taskForm" class="task-form">
+          <input type="text" id="taskInput" placeholder="Yangi vazifa matnini kiriting..." required autocomplete="off">
+          <button type="submit" class="btn-primary"><i class="fa-solid fa-plus"></i> Qo'shish</button>
+        </form>
+        <ul id="taskList" class="task-list"></ul>
+      </div>
+    </section>
+
+    <!-- 3-SAHIFA: AUDIO PAD -->
+    <section id="audio-page" class="page-section">
+      <div class="panel-box">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-wave-square"></i> Futuristic Audio Pad</h2>
+        </div>
+        <p class="panel-desc">Sintezlangan ovozlarni hosil qilish uchun tugmalarni bosing:</p>
+        <div class="sound-grid">
+          <button class="sound-btn" data-freq="261.63">C4 (Do)</button>
+          <button class="sound-btn" data-freq="293.66">D4 (Re)</button>
+          <button class="sound-btn" data-freq="329.63">E4 (Mi)</button>
+          <button class="sound-btn" data-freq="349.23">F4 (Fa)</button>
+          <button class="sound-btn" data-freq="392.00">G4 (Sol)</button>
+          <button class="sound-btn" data-freq="440.00">A4 (La)</button>
+          <button class="sound-btn" data-freq="493.88">B4 (Si)</button>
+          <button class="sound-btn" data-freq="523.25">C5 (Do High)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4-SAHIFA: QAYDLAR (NOTES) -->
+    <section id="notes-page" class="page-section">
+      <div class="panel-box notes-panel">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-note-sticky"></i> Tezkor Qaydlar Daftari</h2>
+          <span class="save-status" id="saveStatus">Saqlandi</span>
+        </div>
+        <textarea id="notesArea" placeholder="Bu yerga muhim fikrlaringizni yozing... (Avtomatik saqlanadi)"></textarea>
+      </div>
+    </section>
+
+    <!-- 5-SAHIFA: VALYUTA VA KRIPTO -->
+    <section id="crypto-page" class="page-section">
+      <div class="panel-box">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-coins"></i> Valyuta va Kripto Konverteri</h2>
+        </div>
+        <div class="converter-box">
+          <div class="input-group">
+            <label>Summani kiriting ($ USD):</label>
+            <input type="number" id="usdInput" value="100" min="1">
+          </div>
+          <div class="convert-results">
+            <div class="res-item"><span>O'zbek so'mi (UZS):</span> <strong id="uzsRes">1,280,000 UZS</strong></div>
+            <div class="res-item"><span>Yevro (EUR):</span> <strong id="eurRes">92 EUR</strong></div>
+            <div class="res-item"><span>Bitcoin (BTC):</span> <strong id="btcRes">0.0015 BTC</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6-SAHIFA: POMODORO TAYMER -->
+    <section id="pomodoro-page" class="page-section">
+      <div class="panel-box pomodoro-box">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-stopwatch"></i> Pomodoro Ish Taymeri</h2>
+        </div>
+        <div class="timer-display" id="pomoDisplay">25:00</div>
+        <div class="pomo-controls">
+          <button class="btn-primary" id="startPomoBtn"><i class="fa-solid fa-play"></i> Boshlash</button>
+          <button class="btn-secondary" id="pausePomoBtn"><i class="fa-solid fa-pause"></i> Pauza</button>
+          <button class="btn-danger" id="resetPomoBtn"><i class="fa-solid fa-rotate-left"></i> Qayta o'rnatish</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7-SAHIFA: CYBER CLICKER GAME -->
+    <section id="game-page" class="page-section">
+      <div class="panel-box game-container">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-gamepad"></i> Cyber Clicker Mini-Game</h2>
+        </div>
+        <div class="game-stats">
+          <div class="g-stat">Ochko: <span id="clickScore">0</span></div>
+          <div class="g-stat">Lvl: <span id="clickLevel">1</span></div>
+        </div>
+        <button id="cyberClickBtn" class="cyber-orb">
+          <i class="fa-solid fa-hand-pointer"></i>
+          <span>CLICK!</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 8-SAHIFA: CYBER CALCULATOR -->
+    <section id="calc-page" class="page-section">
+      <div class="panel-box calc-wrapper">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-calculator"></i> Cyber Calculator</h2>
+        </div>
+        <input type="text" id="calcDisplay" readonly value="0">
+        <div class="calc-grid">
+          <button class="calc-btn danger" onclick="calcClear()">C</button>
+          <button class="calc-btn" onclick="calcAppend('/')">/</button>
+          <button class="calc-btn" onclick="calcAppend('*')">*</button>
+          <button class="calc-btn" onclick="calcAppend('-')">-</button>
+          
+          <button class="calc-btn" onclick="calcAppend('7')">7</button>
+          <button class="calc-btn" onclick="calcAppend('8')">8</button>
+          <button class="calc-btn" onclick="calcAppend('9')">9</button>
+          <button class="calc-btn" onclick="calcAppend('+')">+</button>
+          
+          <button class="calc-btn" onclick="calcAppend('4')">4</button>
+          <button class="calc-btn" onclick="calcAppend('5')">5</button>
+          <button class="calc-btn" onclick="calcAppend('6')">6</button>
+          <button class="calc-btn equal" onclick="calcEquals()">=</button>
+          
+          <button class="calc-btn" onclick="calcAppend('1')">1</button>
+          <button class="calc-btn" onclick="calcAppend('2')">2</button>
+          <button class="calc-btn" onclick="calcAppend('3')">3</button>
+          <button class="calc-btn zero" onclick="calcAppend('0')">0</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9-SAHIFA: YANGI - CYBER SECURITY & PASS GENERATOR -->
+    <section id="cyber-sec-page" class="page-section">
+      <div class="panel-box">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-shield-halved"></i> Key Generator & Security Lab</h2>
+        </div>
+        <div class="sec-container">
+          <div class="input-group">
+            <label>Parol Uzunligi:</label>
+            <input type="range" id="passLength" min="8" max="32" value="16" oninput="document.getElementById('lenVal').innerText = this.value">
+            <span>Uzunlik: <b id="lenVal" class="glow-text">16</b> ta belgi</span>
+          </div>
+          <button class="btn-primary margin-top-20" id="genPassBtn"><i class="fa-solid fa-key"></i> Parol Yaratish</button>
+          <div class="res-item margin-top-20">
+            <span>Yaratilgan Parol:</span>
+            <strong id="passOutput" class="glow-text">****************</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10-SAHIFA: YANGI - KOSMIK OB-HAVO TRACKER -->
+    <section id="weather-page" class="page-section">
+      <div class="panel-box">
+        <div class="panel-header">
+          <h2><i class="fa-solid fa-earth-americas"></i> Kosmik Ob-havo & Sayyora Paneli</h2>
+        </div>
+        <div class="space-grid">
+          <div class="space-card">
+            <i class="fa-solid fa-sun icon-large orange"></i>
+            <h3>Quyosh Faolligi</h3>
+            <p>X-Class Flaring Level 2</p>
+          </div>
+          <div class="space-card">
+            <i class="fa-solid fa-moon icon-large cyan"></i>
+            <h3>Oydagi Bosqich</h3>
+            <p>To'lishgan Oy (98%)</p>
+          </div>
+          <div class="space-card">
+            <i class="fa-solid fa-satellite icon-large green"></i>
+            <h3>XKS (ISS) Ob'ekti</h3>
+            <p>Toshkent ustidan o'tmoqda</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+<!-- 1) SIDEBAR: "Ob-havo & Koinot" tugmasidan KEYIN, </nav> dan oldin qo'ying -->
+<button class="nav-link" data-target="terminal-page">
+  <i class="fa-solid fa-terminal"></i> <span>Terminal</span>
+</button>
+
+
+<!-- 2) HEADER: <div class="header-widgets"> ning ichida, eng BOSHIGA (theme-switcher dan oldin) qo'ying -->
+<div class="tool-group">
+  <button class="tool-btn" id="matrixToggleBtn" title="Matrix effektini yoqish/o'chirish">
+    <i class="fa-solid fa-eye"></i>
+  </button>
+  <button class="tool-btn" id="fullscreenBtn" title="To'liq ekran">
+    <i class="fa-solid fa-expand"></i>
+  </button>
+</div>
+
+
+<!-- 3) UMUMIY SAHIFA: #overview-page ichida, "chart-panel" bloki tugagandan KEYIN qo'ying -->
+<div class="panel-box margin-top-20">
+  <div class="panel-header">
+    <h2><i class="fa-solid fa-satellite-dish"></i> Tizim Loglari</h2>
+    <button class="icon-btn" id="clearLogBtn"><i class="fa-solid fa-broom"></i> Tozalash</button>
+  </div>
+  <ul class="log-list" id="logList"></ul>
+</div>
+
+
+<!-- 4) TERMINAL SAHIFASI: </main> yopilishidan oldin, weather-page dan KEYIN qo'ying -->
+<section id="terminal-page" class="page-section">
+  <div class="panel-box">
+    <div class="panel-header">
+      <h2><i class="fa-solid fa-terminal"></i> Cyber Terminal</h2>
+      <span class="save-status show">help — buyruqlar ro'yxati</span>
+    </div>
+    <div class="terminal" id="terminalBox">
+      <div class="term-output" id="termOutput"></div>
+      <div class="term-line">
+        <span class="term-prompt">dev@cyberpulse:~$</span>
+        <input type="text" id="termInput" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================================================
+     index.html GA 2-QISM QO'SHIMCHALAR (mavjud kodga tegmang)
+     ============================================================ -->
+
+<!-- 1) HEADER: 1-qismda qo'shgan <div class="tool-group"> ichiga, boshqa tugmalar yoniga qo'ying -->
+<button class="tool-btn" id="soundToggleBtn" title="Ovozni o'chirish/yoqish">
+  <i class="fa-solid fa-volume-high"></i>
+</button>
+
+
+<!-- 2) TOAST (bildirishnomalar): <script src="script.js"></script> dan OLDIN qo'ying -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+
+<!-- 3) VAZIFALAR: #tasks-page ichida, <form id="taskForm"> dan KEYIN, <ul id="taskList"> dan OLDIN qo'ying -->
+<div class="filter-bar">
+  <div class="filter-group">
+    <button class="filter-btn active" data-filter="all">Hammasi</button>
+    <button class="filter-btn" data-filter="active">Faol</button>
+    <button class="filter-btn" data-filter="done">Bajarilgan</button>
+  </div>
+  <div class="filter-info">
+    <span>Qolgan: <b id="tasksLeft">0</b></span>
+    <button class="btn-small" id="clearDoneBtn"><i class="fa-solid fa-broom"></i> Bajarilganlarni tozalash</button>
+  </div>
+</div>
+
+
+<!-- 4) QAYDLAR: #notes-page ichida, <textarea id="notesArea"> dan KEYIN qo'ying -->
+<div class="notes-footer">
+  <span id="notesCount" class="notes-count">0 so'z · 0 belgi</span>
+  <div class="notes-actions">
+    <button class="btn-small" id="downloadNotesBtn"><i class="fa-solid fa-download"></i> .txt yuklab olish</button>
+    <button class="btn-small danger" id="clearNotesBtn"><i class="fa-solid fa-trash"></i> Tozalash</button>
+  </div>
+</div>
+
+
+<!-- 5) POMODORO: <div class="timer-display" id="pomoDisplay"> dan OLDIN qo'ying -->
+<div class="preset-row">
+  <button class="preset-btn" data-min="15">15 daq</button>
+  <button class="preset-btn active" data-min="25">25 daq</button>
+  <button class="preset-btn" data-min="45">45 daq</button>
+  <button class="preset-btn" data-min="60">60 daq</button>
+</div>
+
+<!-- 5b) POMODORO: <div class="pomo-controls"> ...</div> bloki tugagandan KEYIN qo'ying -->
+<p class="pomo-sessions">Bugun yakunlangan sessiyalar: <b id="pomoSessions">0</b></p>
+
+
+<!-- 6) CYBER GAME: <div class="game-stats"> ichiga, oxirgi g-stat dan KEYIN qo'ying -->
+<div class="g-stat">Rekord: <span id="clickBest">0</span></div>
+
+<!-- 6b) CYBER GAME: <button id="cyberClickBtn"> ...</button> dan KEYIN qo'ying -->
+<button class="btn-danger" id="resetClickBtn"><i class="fa-solid fa-rotate-left"></i> Qayta boshlash</button>
+
+
+<!-- 7) KALKULYATOR: <div class="calc-grid"> ...</div> bloki tugagandan KEYIN qo'ying -->
+<div class="calc-extra">
+  <button class="calc-btn" onclick="calcDot()">.</button>
+  <button class="calc-btn" onclick="calcAppend('(')">(</button>
+  <button class="calc-btn" onclick="calcAppend(')')">)</button>
+  <button class="calc-btn danger" onclick="calcBack()"><i class="fa-solid fa-delete-left"></i></button>
+</div>
+
+
+<!-- 8) CYBER SECURITY: #cyber-sec-page ichida, passOutput li <div class="res-item"> dan KEYIN, .sec-container yopilishidan oldin qo'ying -->
+<div class="strength-wrap margin-top-20">
+  <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+  <div class="strength-row">
+    <span>Kuchi: <b id="strengthText">—</b></span>
+    <button class="btn-small" id="copyPassBtn"><i class="fa-solid fa-copy"></i> Nusxalash</button>
+  </div>
+</div>
+<!-- ============================================================
+     index.html GA 3-QISM QO'SHIMCHALAR (mavjud kodga tegmang)
+     ============================================================ -->
+
+<!-- 1) UMUMIY SAHIFA: #overview-page ichida, "chart-panel" bloki tugagandan KEYIN qo'ying -->
+<div class="charts-row margin-top-20">
+  <div class="panel-box">
+    <div class="panel-header">
+      <h2><i class="fa-solid fa-microchip"></i> Jonli CPU</h2>
+    </div>
+    <div class="chart-container small">
+      <canvas id="cpuLiveChart"></canvas>
+    </div>
+  </div>
+  <div class="panel-box">
+    <div class="panel-header">
+      <h2><i class="fa-solid fa-chart-pie"></i> Vazifalar holati</h2>
+    </div>
+    <div class="chart-container small">
+      <canvas id="taskDonutChart"></canvas>
+    </div>
+  </div>
+</div>
+
+
+<!-- 2) VALYUTA & KRIPTO: <div class="convert-results"> ichiga, oxirgi res-item dan KEYIN qo'ying -->
+<div class="res-item"><span>Rossiya rubli (RUB):</span> <strong id="rubRes">—</strong></div>
+<div class="res-item"><span>Ethereum (ETH):</span> <strong id="ethRes">—</strong></div>
+
+<!-- 2b) VALYUTA & KRIPTO: <div class="convert-results"> bloki tugagandan KEYIN, .converter-box ichida qo'ying -->
+<div class="rate-status">
+  <span id="rateStatus">Kurslar yuklanmoqda...</span>
+  <button class="btn-small" id="refreshRatesBtn"><i class="fa-solid fa-rotate-right"></i> Kursni yangilash</button>
+</div>
+
+
+<!-- 3) OB-HAVO & KOINOT: <div class="space-grid"> ichiga, oxirgi space-card dan KEYIN qo'ying -->
+<div class="space-card">
+  <i class="fa-solid fa-temperature-half icon-large cyan"></i>
+  <h3>Toshkent: hozir</h3>
+  <p id="weatherNow">Yuklanmoqda...</p>
+  <p id="weatherExtra" class="space-sub"></p>
+</div>
+
+
+<!-- 4) BUYRUQLAR PANELI (Ctrl+K): <script src="script.js"></script> dan OLDIN qo'ying -->
+<div class="palette-overlay" id="paletteOverlay">
+  <div class="palette-box">
+    <input type="text" id="paletteInput" placeholder="Sahifa yoki buyruq nomini yozing...  (Esc — yopish)" autocomplete="off" spellcheck="false">
+    <ul class="palette-list" id="paletteList"></ul>
+  </div>
+</div>
+
+
+<!-- 4b) (ixtiyoriy) HEADER: 1-qismdagi <div class="tool-group"> ichiga qo'ying -->
+<button class="tool-btn" id="paletteBtn" title="Buyruqlar paneli (Ctrl+K)">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+
+  <script src="script.js"></script>
+</body>
+</html>

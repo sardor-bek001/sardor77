@@ -1,0 +1,1061 @@
+:root {
+  --bg-color: #0b0f19;
+  --card-bg: rgba(22, 29, 47, 0.75);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --accent-cyan: #00f2fe;
+  --accent-purple: #7000ff;
+  --accent-green: #00e676;
+  --accent-orange: #ff9100;
+  --accent-red: #ff5252;
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Background Canvas Matrix */
+#matrixCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Theme Switcher Dots */
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card-bg);
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.theme-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.theme-dot:hover { transform: scale(1.2); }
+.theme-dot.cyan { background: #00f2fe; }
+.theme-dot.purple { background: #7000ff; }
+.theme-dot.green { background: #00e676; }
+.theme-dot.orange { background: #ff9100; }
+
+/* Sidebar Navigation */
+.sidebar {
+  width: 250px;
+  background: rgba(15, 21, 37, 0.95);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid var(--border-color);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  height: 100vh;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-size: 0.95rem;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: linear-gradient(90deg, rgba(0, 242, 254, 0.15), transparent);
+  color: var(--accent-cyan);
+  border-left: 3px solid var(--accent-cyan);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.user-profile img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-cyan);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info .name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.user-info .status {
+  font-size: 0.75rem;
+  color: var(--accent-green);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Main Content Area */
+.main-content {
+  margin-left: 250px;
+  padding: 30px;
+  width: calc(100% - 250px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcome-text h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.glow-text {
+  background: linear-gradient(45deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.welcome-text p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.header-widgets {
+  display: flex;
+  gap: 16px;
+}
+
+.widget-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 10px 18px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+}
+
+.widget-box i {
+  color: var(--accent-cyan);
+}
+
+/* SPA Pages switching */
+.page-section {
+  display: none;
+  animation: fadeIn 0.4s ease-in-out forwards;
+}
+
+.page-section.active-page {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Panel Box & Cards */
+.panel-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.panel-header h2 {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.icon-btn:hover {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.stat-icon.cyan { background: rgba(0, 242, 254, 0.15); color: var(--accent-cyan); }
+.stat-icon.purple { background: rgba(112, 0, 255, 0.15); color: var(--accent-purple); }
+.stat-icon.green { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); }
+.stat-icon.orange { background: rgba(255, 145, 0, 0.15); color: var(--accent-orange); }
+
+.stat-data h3 {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.chart-container {
+  height: 300px;
+  position: relative;
+}
+
+/* Task Manager Page */
+.task-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.task-form input {
+  flex-grow: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #fff;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.task-form input:focus {
+  border-color: var(--accent-cyan);
+}
+
+.btn-primary {
+  background: var(--accent-cyan);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.task-item.completed span {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.task-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.task-actions .check-btn:hover { color: var(--accent-green); }
+.task-actions .delete-btn:hover { color: var(--accent-red); }
+
+/* Audio Pad Page */
+.panel-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.sound-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.sound-btn {
+  background: rgba(112, 0, 255, 0.2);
+  border: 1px solid var(--accent-purple);
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.sound-btn:active {
+  transform: scale(0.95);
+  background: var(--accent-purple);
+}
+
+/* Notes Page */
+.notes-panel textarea {
+  width: 100%;
+  height: 250px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+  color: #fff;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.notes-panel textarea:focus { border-color: var(--accent-purple); }
+
+.save-status {
+  font-size: 0.8rem;
+  color: var(--accent-green);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.save-status.show { opacity: 1; }
+
+/* Currency & Crypto Page */
+.converter-box {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.convert-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.res-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.res-item strong { color: var(--accent-cyan); }
+
+/* Pomodoro Page */
+.pomodoro-box {
+  text-align: center;
+  padding: 40px;
+}
+
+.timer-display {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  margin: 20px 0;
+  letter-spacing: 2px;
+}
+
+.pomo-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: rgba(255, 82, 82, 0.2);
+  border: 1px solid var(--accent-red);
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Clicker Game Styling */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.game-stats {
+  display: flex;
+  gap: 30px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.g-stat span { color: var(--accent-cyan); }
+
+.cyber-orb {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-cyan), var(--accent-purple));
+  border: 4px solid #fff;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 30px var(--accent-cyan);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.1s ease;
+}
+
+.cyber-orb:active { transform: scale(0.9); }
+
+/* Calculator Styling */
+.calc-wrapper {
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+#calcDisplay {
+  width: 100%;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--accent-cyan);
+  text-align: right;
+  padding: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.calc-btn {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.calc-btn:hover { background: rgba(255, 255, 255, 0.15); }
+.calc-btn.danger { color: var(--accent-red); }
+.calc-btn.equal { background: var(--accent-cyan); color: #000; font-weight: bold; grid-row: span 2; height: 100%; }
+.calc-btn.zero { grid-column: span 3; }
+
+/* YANGI: Space & Security Cards */
+.space-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.space-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.icon-large {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.icon-large.orange { color: var(--accent-orange); }
+.icon-large.cyan { color: var(--accent-cyan); }
+.icon-large.green { color: var(--accent-green); }
+
+/* Responsive UI */
+@media (max-width: 992px) {
+  .sidebar { width: 70px; padding: 16px 8px; }
+  .logo span, .nav-link span, .user-info { display: none; }
+  .main-content { margin-left: 70px; width: calc(100% - 70px); }
+  .sound-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* ============================================================
+   main.css OXIRIGA QO'SHING (mavjud kodga tegmang)
+   ============================================================ */
+
+/* Header tool tugmalari */
+.tool-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card-bg);
+  padding: 6px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.tool-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tool-btn:hover {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+.tool-btn.off { color: var(--accent-red); }
+
+/* Tizim loglari */
+.log-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.log-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-cyan);
+  border-radius: 8px;
+  font-family: Consolas, monospace;
+  font-size: 0.85rem;
+  animation: fadeIn 0.4s ease-in-out forwards;
+}
+
+.log-item .log-time { color: var(--text-secondary); }
+.log-item.warn { border-left-color: var(--accent-orange); }
+.log-item.error { border-left-color: var(--accent-red); }
+.log-item.ok { border-left-color: var(--accent-green); }
+
+/* Terminal */
+.terminal {
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  height: 380px;
+  overflow-y: auto;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.95rem;
+  cursor: text;
+}
+
+.term-output div {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 4px;
+  color: #cfe9ee;
+}
+
+.term-output .term-cmd { color: var(--text-secondary); }
+.term-output .term-ok { color: var(--accent-green); }
+.term-output .term-err { color: var(--accent-red); }
+.term-output .term-info { color: var(--accent-cyan); }
+
+.term-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.term-prompt {
+  color: var(--accent-green);
+  white-space: nowrap;
+}
+
+.term-line input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: inherit;
+  caret-color: var(--accent-cyan);
+}
+
+@media (max-width: 992px) {
+  .header-widgets { flex-wrap: wrap; justify-content: flex-end; }
+  .term-prompt { display: none; }
+}
+/* ============================================================
+   main.css OXIRIGA QO'SHING (2-qism, mavjud kodga tegmang)
+   ============================================================ */
+
+/* Kichik tugma (umumiy) */
+.btn-small {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-small:hover {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+.btn-small.danger:hover {
+  color: var(--accent-red);
+  border-color: var(--accent-red);
+}
+
+/* Toast bildirishnomalar */
+.toast-wrap {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast {
+  background: rgba(15, 21, 37, 0.95);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-cyan);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  animation: toastIn 0.35s ease forwards;
+}
+
+.toast.success { border-left-color: var(--accent-green); }
+.toast.error { border-left-color: var(--accent-red); }
+.toast.hide { opacity: 0; transform: translateX(20px); transition: all 0.35s ease; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Vazifalar filtri */
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filter-group {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 7px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  background: rgba(0, 242, 254, 0.08);
+}
+
+.filter-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.filter-info b { color: var(--accent-cyan); }
+
+/* Qaydlar footeri */
+.notes-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.notes-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.notes-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Pomodoro presetlari */
+.preset-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.preset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.preset-btn:hover,
+.preset-btn.active {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  background: rgba(0, 242, 254, 0.08);
+}
+
+.pomo-sessions {
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.pomo-sessions b { color: var(--accent-cyan); }
+
+/* Kalkulyator qo'shimcha qator */
+.calc-extra {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Parol kuchi */
+.strength-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 6px;
+  background: var(--accent-red);
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.strength-fill.weak { background: var(--accent-red); }
+.strength-fill.mid { background: var(--accent-orange); }
+.strength-fill.strong { background: var(--accent-green); }
+.strength-fill.ultra { background: var(--accent-cyan); }
+
+.strength-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.strength-row b { color: #fff; }
+
+@media (max-width: 992px) {
+  .toast-wrap { right: 12px; bottom: 12px; left: 12px; }
+}
+/* ============================================================
+   main.css OXIRIGA QO'SHING (3-qism, mavjud kodga tegmang)
+   ============================================================ */
+
+/* Aktiv mavzu nuqtasi */
+.theme-dot.active {
+  box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px rgba(255, 255, 255, 0.7);
+}
+
+/* Qo'shimcha grafiklar */
+.charts-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.chart-container.small {
+  height: 240px;
+}
+
+/* Kurs holati */
+.rate-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Ob-havo kartasi */
+.space-sub {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Buyruqlar paneli (Ctrl+K) */
+.palette-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+  z-index: 2000;
+}
+
+.palette-overlay.open {
+  display: flex;
+}
+
+.palette-box {
+  width: min(560px, 92vw);
+  background: rgba(15, 21, 37, 0.98);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  animation: fadeIn 0.25s ease-in-out forwards;
+}
+
+.palette-box input {
+  width: 100%;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  outline: none;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.palette-list {
+  list-style: none;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.palette-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.palette-item i {
+  width: 18px;
+  text-align: center;
+}
+
+.palette-item:hover,
+.palette-item.active {
+  background: rgba(0, 242, 254, 0.1);
+  color: var(--accent-cyan);
+}
+
+.palette-empty {
+  padding: 14px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+}
